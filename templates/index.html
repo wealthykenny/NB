@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NEXTBUY | The Official Vault</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Aurora Background -->
+    <div class="aurora-bg">
+        <div class="aurora-blob-1"></div>
+        <div class="aurora-blob-2"></div>
+    </div>
+
+    <!-- Glassmorphism Nav -->
+    <nav class="glass-nav">
+        <h1 style="font-weight: 900; letter-spacing: -1.5px;">NEXTBUY.</h1>
+        <div>
+            <a href="/login" class="neo-btn" style="background: white;">Sign In</a>
+            <a href="/signup" class="neo-btn">Join Directory</a>
+        </div>
+    </nav>
+
+    <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+        <div class="neo-card" style="padding: 40px; background: var(--primary-orange);">
+            <h2 style="font-size: 3rem; margin:0; text-transform: uppercase;">Curated Vault</h2>
+            <p style="font-weight: 700; font-size: 1.2rem;">Sourced for the elite. Official Nextbuy Drops only.</p>
+        </div>
+    </div>
+
+    <!-- Neo-Brutalism Feed -->
+    <main class="feed-container">
+        {% for product in products %}
+        <article class="neo-card product-card">
+            <img src="{{ product.image_url }}" alt="Drop Image" style="width: 100%; height: 300px; object-fit: cover; border-bottom: 3px solid black;">
+            <div style="padding: 20px;">
+                <h3 style="margin: 0 0 10px 0; font-weight: 900;">{{ product.title }}</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; font-size: 1.2rem;">Market Value: ${{ product.price }}</span>
+                    <div>
+                        <!-- Interactive Icons -->
+                        <button class="action-btn" data-id="{{ product.id }}" data-action="like">🖤</button>
+                        <button class="action-btn" data-id="{{ product.id }}" data-action="save">📌</button>
+                    </div>
+                </div>
+                <button class="neo-btn" style="width: 100%; margin-top: 15px; text-align: center;">Acquire Asset</button>
+            </div>
+        </article>
+        {% endfor %}
+    </main>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
+```
+
+---
