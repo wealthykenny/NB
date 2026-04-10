@@ -2,57 +2,375 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NEXTBUY | The Official Vault</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXTBUY | Official Vault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <!-- Using Phosphor Icons for sharp, modern icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --orange: #FF6B00;
+            --blue: #0047AB;
+            --bg-light: #F8F9FA;
+            --dark: #09090B;
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --border-width: 3px;
+            --shadow: 4px 4px 0px var(--dark);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- AURORA BACKGROUND --- */
+        .aurora {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: var(--bg-light);
+            overflow: hidden;
+        }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: float 15s infinite alternate; }
+        .blob-1 { background: var(--orange); width: 400px; height: 400px; top: -10%; left: -10%; }
+        .blob-2 { background: var(--blue); width: 350px; height: 350px; bottom: 10%; right: -10%; }
+        @keyframes float { 100% { transform: translate(50px, 50px) scale(1.2); } }
+
+        /* --- MOBILE DEVICE SIMULATOR --- */
+        .device {
+            width: 100%;
+            max-width: 400px; /* iPhone Pro Max width */
+            height: 100vh;
+            max-height: 850px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            border: var(--border-width) solid var(--dark);
+            box-shadow: 12px 12px 0px var(--dark);
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 450px) { .device { border-radius: 40px; height: 90vh; } }
+
+        /* --- NEO-BRUTALISM SYSTEM --- */
+        .neo-box {
+            background: white;
+            border: var(--border-width) solid var(--dark);
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+        }
+        .neo-btn {
+            background: var(--orange);
+            color: var(--dark);
+            border: var(--border-width) solid var(--dark);
+            box-shadow: var(--shadow);
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .neo-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--dark); }
+
+        /* --- SCREEN MANAGEMENT --- */
+        .screen { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 100px; }
+        .screen.active { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* =========================================
+           SCREEN 1: THE VAULT FEED (Home Layout)
+           ========================================= */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; }
+        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+
+        /* Hero Layout exactly like image */
+        .hero-card {
+            margin: 0 20px;
+            background: var(--dark);
+            color: white;
+            border-radius: 24px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            border: var(--border-width) solid var(--dark);
+            box-shadow: var(--shadow);
+        }
+        .hero-title { font-size: 22px; font-weight: 900; text-transform: uppercase; width: 60%; z-index: 2; position: relative;}
+        .hero-subtitle { font-size: 10px; color: #aaa; margin-top: 5px; z-index: 2; position: relative;}
+        .hero-thumbs { display: flex; gap: 8px; margin-top: 15px; z-index: 2; position: relative;}
+        .hero-thumb { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 8px; border: 2px solid white; }
+        .hero-btn { margin-top: 15px; padding: 8px 16px; border-radius: 20px; background: white; color: black; font-weight: 800; font-size: 12px; border: none; z-index: 2; position: relative; width: fit-content;}
+        .hero-img { position: absolute; right: -20px; bottom: 0; height: 120%; z-index: 1;}
+
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px; }
+        .section-title { font-weight: 800; font-size: 18px; }
+        .see-all { font-size: 12px; font-weight: 600; color: #666; }
+
+        /* Filter Tabs */
+        .filters { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px; margin-bottom: 20px; scrollbar-width: none; }
+        .filter-pill { padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 12px; white-space: nowrap; border: 2px solid var(--dark); }
+        .filter-pill.active { background: var(--dark); color: white; }
+
+        /* Grid Layout */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+        .grid-item { position: relative; padding-bottom: 10px; cursor: pointer; }
+        .grid-img-wrap { height: 180px; background: #e0e0e0; border-radius: 16px; border: var(--border-width) solid var(--dark); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 10px; }
+        .grid-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .grid-heart { position: absolute; top: 10px; left: 10px; background: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--dark); }
+        .grid-title { font-weight: 800; font-size: 14px; text-align: center; }
+
+        /* Bottom Nav (Glassmorphism) */
+        .bottom-nav {
+            position: absolute; bottom: 20px; left: 20px; right: 20px;
+            background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 2px solid var(--glass-border); border-radius: 30px;
+            display: flex; justify-content: space-around; padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .nav-item { font-size: 24px; color: var(--dark); }
+        .nav-item.active { color: var(--orange); }
+
+        /* =========================================
+           SCREEN 2: ASSET DETAILS (Product Layout)
+           ========================================= */
+        .prod-header { display: flex; justify-content: space-between; position: absolute; top: 20px; left: 20px; right: 20px; z-index: 10; }
+        .round-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        .prod-gallery { position: relative; height: 45%; background: #e0e0e0; border-bottom: var(--border-width) solid var(--dark); }
+        .prod-gallery img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Side Thumbnails Layout */
+        .side-thumbs { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
+        .side-thumb { width: 40px; height: 40px; background: white; border-radius: 8px; border: 2px solid var(--dark); box-shadow: 2px 2px 0px var(--dark); overflow: hidden;}
+        .side-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        .prod-content { padding: 20px; }
+        .tags { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tag { padding: 4px 10px; border-radius: 4px; font-weight: 800; font-size: 10px; text-transform: uppercase; border: 2px solid var(--dark); }
+        .tag.orange { background: var(--orange); }
+        .tag.green { background: #39FF14; }
+
+        .prod-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .prod-title { font-weight: 900; font-size: 24px; letter-spacing: -0.5px; }
+        .prod-subtitle { font-size: 14px; color: #666; font-weight: 600; margin-top: 4px; }
+        
+        .size-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 15px; }
+        .size-row { display: flex; gap: 10px; margin-bottom: 25px; }
+        .size-btn { width: 45px; height: 45px; border-radius: 50%; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid var(--dark); background: white; cursor: pointer; transition: 0.2s;}
+        .size-btn.active { background: var(--dark); color: white; transform: scale(1.1); box-shadow: 3px 3px 0px var(--orange); }
+
+        .action-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .stepper { display: flex; align-items: center; gap: 15px; background: white; border: var(--border-width) solid var(--dark); padding: 5px 15px; border-radius: 20px; box-shadow: var(--shadow); }
+        .step-btn { font-size: 20px; font-weight: 900; cursor: pointer; }
+        .qty { font-weight: 800; font-size: 16px; }
+        
+        .price-col { text-align: right; }
+        .price-label { font-size: 12px; font-weight: 700; color: #666; }
+        .price-old { font-size: 12px; text-decoration: line-through; color: #999; font-weight: 600;}
+        .price-new { font-size: 24px; font-weight: 900; }
+
+        .cta-btn { width: 100%; padding: 18px; border-radius: 30px; font-size: 16px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    </style>
 </head>
 <body>
-    <!-- Aurora Background -->
-    <div class="aurora-bg">
-        <div class="aurora-blob-1"></div>
-        <div class="aurora-blob-2"></div>
+
+    <!-- AURORA BACKGROUND -->
+    <div class="aurora">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
     </div>
 
-    <!-- Glassmorphism Nav -->
-    <nav class="glass-nav">
-        <h1 style="font-weight: 900; letter-spacing: -1.5px;">NEXTBUY.</h1>
-        <div>
-            <a href="/login" class="neo-btn" style="background: white;">Sign In</a>
-            <a href="/signup" class="neo-btn">Join Directory</a>
-        </div>
-    </nav>
+    <!-- MOBILE CONTAINER -->
+    <div class="device">
+        
+        <!-- ===================================== -->
+        <!-- SCREEN 1: VAULT FEED -->
+        <!-- ===================================== -->
+        <div id="screen-home" class="screen active">
+            <div class="header">
+                <div class="logo">NEXTBUY.</div>
+                <div class="neo-box round-btn" style="width: 45px; height: 45px;">
+                    <i class="ph ph-shopping-bag" style="font-size: 22px;"></i>
+                </div>
+            </div>
 
-    <div style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
-        <div class="neo-card" style="padding: 40px; background: var(--primary-orange);">
-            <h2 style="font-size: 3rem; margin:0; text-transform: uppercase;">Curated Vault</h2>
-            <p style="font-weight: 700; font-size: 1.2rem;">Sourced for the elite. Official Nextbuy Drops only.</p>
-        </div>
-    </div>
+            <!-- Hero Layout matching image -->
+            <div class="hero-card">
+                <!-- Using placeholder for model -->
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="hero-img" alt="Model">
+                <div class="hero-title">NEXTBUY EXCLUSIVE FIT</div>
+                <div class="hero-subtitle">Official Light-Support Urban Gear</div>
+                <div class="hero-thumbs">
+                    <div class="hero-thumb"></div>
+                    <div class="hero-thumb"></div>
+                    <div class="hero-thumb"></div>
+                </div>
+                <button class="hero-btn">Inspect Asset <i class="ph ph-caret-right"></i></button>
+            </div>
 
-    <!-- Neo-Brutalism Feed -->
-    <main class="feed-container">
-        {% for product in products %}
-        <article class="neo-card product-card">
-            <img src="{{ product.image_url }}" alt="Drop Image" style="width: 100%; height: 300px; object-fit: cover; border-bottom: 3px solid black;">
-            <div style="padding: 20px;">
-                <h3 style="margin: 0 0 10px 0; font-weight: 900;">{{ product.title }}</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 700; font-size: 1.2rem;">Market Value: ${{ product.price }}</span>
+            <div class="section-header">
+                <div class="section-title">Trending Assets</div>
+                <div class="see-all">Access All ></div>
+            </div>
+
+            <!-- Horizontal Filter matching image -->
+            <div class="filters">
+                <div class="filter-pill active">Official Drops</div>
+                <div class="filter-pill">Men</div>
+                <div class="filter-pill">Women</div>
+                <div class="filter-pill">Equipment</div>
+            </div>
+
+            <!-- 2-Column Grid matching image -->
+            <div class="grid">
+                <div class="grid-item" onclick="openProduct()">
+                    <div class="grid-img-wrap neo-box">
+                        <div class="grid-heart"><i class="ph ph-heart"></i></div>
+                        <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Item">
+                    </div>
+                    <div class="grid-title">Nextbuy Stride</div>
+                </div>
+                <div class="grid-item" onclick="openProduct()">
+                    <div class="grid-img-wrap neo-box">
+                        <div class="grid-heart"><i class="ph ph-heart"></i></div>
+                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Item">
+                    </div>
+                    <div class="grid-title">Nextbuy Widerrunner</div>
+                </div>
+            </div>
+
+            <!-- Glassmorphism Bottom Nav -->
+            <div class="bottom-nav">
+                <i class="ph-fill ph-house nav-item active"></i>
+                <i class="ph ph-magnifying-glass nav-item"></i>
+                <i class="ph ph-heart nav-item"></i>
+                <i class="ph ph-user nav-item"></i>
+            </div>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- SCREEN 2: ASSET DETAILS -->
+        <!-- ===================================== -->
+        <div id="screen-product" class="screen">
+            <div class="prod-header">
+                <div class="neo-box round-btn" onclick="goHome()">
+                    <i class="ph ph-caret-left" style="font-size: 20px;"></i>
+                </div>
+                <div class="neo-box round-btn">
+                    <i class="ph ph-share-network" style="font-size: 20px;"></i>
+                </div>
+            </div>
+
+            <!-- Top Half Image Layout with Side Thumbs -->
+            <div class="prod-gallery">
+                <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Product Main">
+                
+                <div class="side-thumbs">
+                    <div class="side-thumb"><img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"></div>
+                    <div class="side-thumb"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"></div>
+                    <div class="side-thumb" style="display:flex;align-items:center;justify-content:center;font-weight:900;">+2</div>
+                </div>
+            </div>
+
+            <div class="prod-content">
+                <!-- Tags -->
+                <div class="tags">
+                    <div class="tag orange">Vault Drop</div>
+                    <div class="tag green" style="background:#00E676; border-color:black;">Discount 30%</div>
+                </div>
+
+                <!-- Title & Like -->
+                <div class="prod-title-row">
                     <div>
-                        <!-- Interactive Icons -->
-                        <button class="action-btn" data-id="{{ product.id }}" data-action="like">🖤</button>
-                        <button class="action-btn" data-id="{{ product.id }}" data-action="save">📌</button>
+                        <div class="prod-title">Nextbuy Dri-FIT</div>
+                        <div class="prod-subtitle">Official Performance Polo</div>
+                    </div>
+                    <i class="ph ph-heart" style="font-size: 28px; cursor: pointer;"></i>
+                </div>
+
+                <!-- Sizes -->
+                <div class="size-header">
+                    <span>Select specs</span>
+                    <span style="text-decoration: underline; cursor: pointer;">Spec Guide</span>
+                </div>
+                <div class="size-row">
+                    <div class="size-btn active" onclick="selectSize(this)">XS</div>
+                    <div class="size-btn" onclick="selectSize(this)">S</div>
+                    <div class="size-btn" onclick="selectSize(this)">M</div>
+                    <div class="size-btn" onclick="selectSize(this)">L</div>
+                    <div class="size-btn" onclick="selectSize(this)">XL</div>
+                </div>
+
+                <!-- Qty and Price matching image layout -->
+                <div class="action-row">
+                    <div>
+                        <div style="font-size: 12px; font-weight: 700; margin-bottom: 5px;">Units</div>
+                        <div class="stepper">
+                            <div class="step-btn" onclick="updateQty(-1)">-</div>
+                            <div class="qty" id="qty-val">1</div>
+                            <div class="step-btn" onclick="updateQty(1)">+</div>
+                        </div>
+                    </div>
+                    <div class="price-col">
+                        <div class="price-label">Market Value</div>
+                        <div class="price-old">$35.00</div>
+                        <div class="price-new" id="price-val">$24.50</div>
                     </div>
                 </div>
-                <button class="neo-btn" style="width: 100%; margin-top: 15px; text-align: center;">Acquire Asset</button>
-            </div>
-        </article>
-        {% endfor %}
-    </main>
 
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
+                <!-- CTA -->
+                <button class="neo-btn cta-btn">
+                    <i class="ph ph-lock-key" style="font-size: 20px;"></i>
+                    ACQUIRE ASSET
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const screenHome = document.getElementById('screen-home');
+        const screenProduct = document.getElementById('screen-product');
+        let currentQty = 1;
+        const basePrice = 24.50;
+
+        // Navigation
+        function openProduct() {
+            screenHome.classList.remove('active');
+            screenProduct.classList.add('active');
+        }
+
+        function goHome() {
+            screenProduct.classList.remove('active');
+            screenHome.classList.add('active');
+        }
+
+        // Size Selection
+        function selectSize(element) {
+            document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // Stepper Logic
+        function updateQty(change) {
+            currentQty += change;
+            if (currentQty < 1) currentQty = 1;
+            document.getElementById('qty-val').innerText = currentQty;
+            
+            // Update Price dynamically
+            const total = (basePrice * currentQty).toFixed(2);
+            document.getElementById('price-val').innerText = `$${total}`;
+        }
+    </script>
 </body>
 </html>
 ```
-
----
