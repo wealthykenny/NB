@@ -1,0 +1,104 @@
+root {
+    --primary-orange: #FF6B00;
+    --cobalt-blue: #0047AB;
+    --off-white: #FDFDFD;
+    --dark: #121212;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--off-white);
+    color: var(--dark);
+    overflow-x: hidden;
+}
+
+/* 1. AURORA BACKGROUND (The Base) */
+.aurora-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1;
+    background: var(--off-white);
+}
+.aurora-blob-1, .aurora-blob-2 {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.4;
+    animation: drift 20s infinite alternate linear;
+}
+.aurora-blob-1 {
+    width: 600px; height: 600px;
+    background: var(--primary-orange);
+    top: -10%; left: -10%;
+}
+.aurora-blob-2 {
+    width: 500px; height: 500px;
+    background: var(--cobalt-blue);
+    bottom: -10%; right: -10%;
+}
+
+@keyframes drift {
+    100% { transform: translate(100px, 100px) scale(1.1); }
+}
+
+/* 2. GLASSMORPHISM (The Layout) */
+.glass-nav {
+    position: sticky;
+    top: 20px;
+    margin: 0 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 24px;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+/* 3. NEO-BRUTALISM (The Interaction) */
+.neo-card {
+    background: white;
+    border: 3px solid black;
+    box-shadow: 6px 6px 0px black;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    border-radius: 0px; /* Brutalism is sharp */
+}
+.neo-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px black;
+}
+
+.neo-btn {
+    background: var(--primary-orange);
+    color: black;
+    font-weight: 900;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border: 3px solid black;
+    box-shadow: 4px 4px 0px black;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+.neo-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px black;
+}
+
+/* Layout Grids */
+.feed-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+```
+
+---
