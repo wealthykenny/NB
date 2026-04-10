@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}NEXTBUY | Official Vault{% endtitle %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* GLOBAL DESIGN SYSTEM VARIABLES */
+        :root {
+            --orange: #FF6B00;
+            --blue: #0047AB;
+            --bg-light: #F8F9FA;
+            --dark: #09090B;
+            --border-width: 3px;
+            --shadow: 4px 4px 0px var(--dark);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { background-color: var(--dark); color: var(--dark); min-height: 100vh; display: flex; justify-content: center; }
+
+        /* AURORA BASE */
+        .aurora {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; background: var(--bg-light); overflow: hidden;
+        }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: float 15s infinite alternate; }
+        .blob-1 { background: var(--orange); width: 400px; height: 400px; top: -10%; left: -10%; }
+        .blob-2 { background: var(--blue); width: 350px; height: 350px; bottom: 10%; right: -10%; }
+        @keyframes float { 100% { transform: translate(50px, 50px) scale(1.2); } }
+
+        /* DEVICE SIMULATOR (For Desktop viewing of Mobile App) */
+        .device {
+            width: 100%; max-width: 420px; min-height: 100vh;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+            position: relative; overflow-x: hidden;
+            border-left: var(--border-width) solid var(--dark);
+            border-right: var(--border-width) solid var(--dark);
+            box-shadow: 12px 0px 20px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
+        }
+
+        /* GLOBAL NEO-BRUTALISM CLASSES */
+        .neo-box { background: white; border: var(--border-width) solid var(--dark); box-shadow: var(--shadow); border-radius: 12px; }
+        .neo-btn { background: var(--orange); color: var(--dark); border: var(--border-width) solid var(--dark); box-shadow: var(--shadow); font-weight: 900; text-transform: uppercase; cursor: pointer; transition: all 0.1s; }
+        .neo-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--dark); }
+        
+        /* PAGE CONTENT WRAPPER */
+        .content-wrapper { flex: 1; padding-bottom: 100px; overflow-y: auto; }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="aurora">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="device">
+        <div class="content-wrapper">
+            <!-- INJECT PAGE SPECIFIC CONTENT HERE -->
+            {% block content %}{% endblock %}
+        </div>
+        
+        <!-- GLASSMORPHISM BOTTOM NAV -->
+        <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(255,255,255,0.4); backdrop-filter: blur(15px); border: 2px solid rgba(255,255,255,0.6); border-radius: 30px; display: flex; justify-content: space-around; padding: 15px; z-index: 100;">
+            <a href="/" style="color: var(--orange);"><i class="ph-fill ph-house" style="font-size: 24px;"></i></a>
+            <a href="/explore" style="color: var(--dark);"><i class="ph ph-magnifying-glass" style="font-size: 24px;"></i></a>
+            <a href="/vault" style="color: var(--dark);"><i class="ph ph-heart" style="font-size: 24px;"></i></a>
+            <a href="/profile" style="color: var(--dark);"><i class="ph ph-user" style="font-size: 24px;"></i></a>
+        </div>
+    </div>
+</body>
+</html>
+```
